@@ -1,0 +1,10 @@
+.\objects\wiring_pulse.o: ..\lib\arduino\wiring_pulse.c
+.\objects\wiring_pulse.o: ..\lib\arduino\Arduino.h
+.\objects\wiring_pulse.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\wiring_pulse.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\wiring_pulse.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\wiring_pulse.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\wiring_pulse.o: ..\lib\arduino\avr/pgmspace.h
+.\objects\wiring_pulse.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\inttypes.h
+.\objects\wiring_pulse.o: ..\lib\arduino\avr/interrupt.h
+.\objects\wiring_pulse.o: ..\lib\arduino\binary.h
