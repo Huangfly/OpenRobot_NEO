@@ -194,31 +194,37 @@ void system_Init(void)
 *******************************************************************************/
 void commandVelocityCallback(const geometry_msgs::Twist& cmd_vel_msg)
 {
-  int32_t f_wheel_value[3] = {0, 0, 0};
-  double wheel_angular_velocity[3] = {0.0, 0.0, 0.0};
 
-  goal_linear_x_velocity  = cmd_vel_msg.linear.x;
-  goal_linear_y_velocity  = cmd_vel_msg.linear.y;
-  goal_angular_velocity = cmd_vel_msg.angular.z;
+  double wheel_speed_cmd[2];
+  double lin_vel1;
+  double lin_vel2;
+//  char rosmsg[256] = {0};
 
-  // right
-  wheel_angular_velocity[RIGHT_CH] = (goal_linear_x_velocity * (sqrt((double)3.0) / (2 * WHEEL_RADIUS))) + (goal_linear_y_velocity * (1 / (2 * WHEEL_RADIUS))) + (goal_angular_velocity * (DISTANCE_CENTER_TO_WHEEL/WHEEL_RADIUS));
-  // left
-  wheel_angular_velocity[LEFT_CH] = (goal_linear_x_velocity * (sqrt((double)3.0) / (-2 * WHEEL_RADIUS))) + (goal_linear_y_velocity * (1 / (2 * WHEEL_RADIUS))) + (goal_angular_velocity * (DISTANCE_CENTER_TO_WHEEL/WHEEL_RADIUS));
-  // back
-  wheel_angular_velocity[BACK_CH] = (goal_linear_x_velocity * 0) + (goal_linear_y_velocity * (-1 / WHEEL_RADIUS)) + (goal_angular_velocity * (DISTANCE_CENTER_TO_WHEEL/WHEEL_RADIUS));
+  wheel_speed_cmd[LEFT]  = cmd_vel_msg.linear.x- (cmd_vel_msg.angular.z * WHEEL_SEPARATION / 2);
+  wheel_speed_cmd[RIGHT] = cmd_vel_msg.linear.x + (cmd_vel_msg.angular.z * WHEEL_SEPARATION / 2);
 
-  for (int id = 0; id < 3; id++)
+  lin_vel1 = wheel_speed_cmd[LEFT] * 312.5;
+  if (lin_vel1 > 256)
   {
-    f_wheel_value[id] = wheel_angular_velocity[id] * 9.54 / RPM_CONSTANT_VALUE;
-
-    if (f_wheel_value[id] > LIMIT_X_MAX_VALUE)       f_wheel_value[id] =  LIMIT_X_MAX_VALUE;
-    else if (f_wheel_value[id] < -LIMIT_X_MAX_VALUE) f_wheel_value[id] = -LIMIT_X_MAX_VALUE;
+    lin_vel1 =  256;
+  }
+  else if (lin_vel1 < -256)
+  {
+    lin_vel1 = -256;
   }
 
-    speed_motor.v_motor1 = f_wheel_value[0];
-    speed_motor.v_motor2 = f_wheel_value[1];
-    speed_motor.v_motor3 = f_wheel_value[2];
+  lin_vel2 = wheel_speed_cmd[RIGHT] * 312.5;
+  if (lin_vel2 > 256)
+  {
+    lin_vel2 =  256;
+  }
+  else if (lin_vel2 < -256)
+  {
+    lin_vel2 = -256;
+  }
+
+	speed_motor.v_motor1 = (int)lin_vel1;
+	speed_motor.v_motor2 = (int)-lin_vel2;
 
 //   sprintf(ex_log_msg, "M1:%f   M2:%f  M3:%f",speed_motor.v_motor1,speed_motor.v_motor2,speed_motor.v_motor3);
 //   nh.loginfo(ex_log_msg);
@@ -299,15 +305,15 @@ void updateGyroCali(void)
 *******************************************************************************/
 void publishSensorStateMsg(void)
 {
-  bool dxl_comm_result = false;
+   bool dxl_comm_result = false;
 
-//  int32_t current_tick;
-  int32_t new_encoder[3];
+  int32_t current_tick;
+
   sensor_state_msg.stamp = nh.now();
-  sensor_state_msg.battery = 0.0;//checkVoltage();
+//  sensor_state_msg.battery = checkVoltage();
 
-  //dxl_comm_result = motor_driver.readEncoder(sensor_state_msg.left_encoder, sensor_state_msg.right_encoder);
-  dxl_comm_result = motor.readEncoder(new_encoder[0], new_encoder[1], new_encoder[2]);
+  dxl_comm_result = motor.readEncoder(sensor_state_msg.left_encoder, sensor_state_msg.right_encoder);
+
   if (dxl_comm_result == true)
   {
     sensor_state_pub.publish(&sensor_state_msg);
@@ -317,15 +323,29 @@ void publishSensorStateMsg(void)
     return;
   }
 
+  current_tick = sensor_state_msg.left_encoder;
 
+  if (!init_encoder_[LEFT])
+  {
+    last_tick_[LEFT] = current_tick;
+    init_encoder_[LEFT] = true;
+  }
 
-  diff_wheel_encoder[0] = new_encoder[0] - old_wheel_encoder[0];
-  diff_wheel_encoder[1] = new_encoder[1] - old_wheel_encoder[1];
-  diff_wheel_encoder[2] = new_encoder[2] - old_wheel_encoder[2];
+  last_diff_tick_[LEFT] = current_tick - last_tick_[LEFT];
+  last_tick_[LEFT] = current_tick;
+  last_rad_[LEFT] += TICK2RAD * (double)last_diff_tick_[LEFT];
 
-  old_wheel_encoder[0] = new_encoder[0];
-  old_wheel_encoder[1] = new_encoder[1];
-  old_wheel_encoder[2] = new_encoder[2];
+  current_tick = sensor_state_msg.right_encoder;
+
+  if (!init_encoder_[RIGHT])
+  {
+    last_tick_[RIGHT] = current_tick;
+    init_encoder_[RIGHT] = true;
+  }
+
+  last_diff_tick_[RIGHT] = current_tick - last_tick_[RIGHT];
+  last_tick_[RIGHT] = current_tick;
+  last_rad_[RIGHT] += TICK2RAD * (double)last_diff_tick_[RIGHT];
 }
 
 
@@ -337,81 +357,69 @@ bool updateOdometry(double diff_time)
   
   float angle = 0.0;
   float angle_kalman = 0.0;
-  
-  float wheel_dis[3];
-  float x,y,th;
-  wheel_dis[RIGHT_CH] = diff_wheel_encoder[RIGHT_CH]*TICK2RAD;
-  wheel_dis[LEFT_CH] = diff_wheel_encoder[LEFT_CH]*TICK2RAD;
-  wheel_dis[BACK_CH] = diff_wheel_encoder[BACK_CH]*TICK2RAD;
-  x = (wheel_dis[RIGHT_CH]-wheel_dis[LEFT_CH])/1.732;
-  y = (-2*wheel_dis[BACK_CH]+wheel_dis[RIGHT_CH]+wheel_dis[LEFT_CH])/3.0;
-  //th = (wheel_dis[0]+wheel_dis[1]+wheel_dis[2])/(3*DISTANCE_CENTER_TO_WHEEL);
 
+ double odom_vel[3];
+
+  double wheel_l, wheel_r;      // rotation value of wheel [rad]
+  double delta_s, delta_theta;
+  static double last_theta = 0.0;
+  double v, w;                  // v = translational velocity [m/s], w = rotational velocity [rad/s]
+  double step_time;
+
+  wheel_l = wheel_r = 0.0;
+  delta_s = delta_theta = 0.0;
+  v = w = 0.0;
+  step_time = 0.0;
+
+  step_time = diff_time;
+
+  if (step_time == 0)
+    return false;
+
+  wheel_l = TICK2RAD * (double)last_diff_tick_[LEFT];
+  wheel_r = TICK2RAD * (double)last_diff_tick_[RIGHT];
+
+  if (isnan(wheel_l))
+    wheel_l = 0.0;
+
+  if (isnan(wheel_r))
+    wheel_r = 0.0;
+
+  delta_s     = WHEEL_RADIUS * (wheel_r + wheel_l) / 2.0;
   angle = atan2f(imu.quat[1]*imu.quat[2] + imu.quat[0]*imu.quat[3],
                      0.5f - imu.quat[2]*imu.quat[2] - imu.quat[3]*imu.quat[3]);
   angle_kalman = kalman.update(angle);
-  th = angle_kalman - last_theta;
+  delta_theta = angle_kalman - last_theta;
 
-  odometry_th += th;
-  odometry_x += (x * cos(odometry_th) - y * sin(odometry_th));
-  odometry_y += (y * cos(odometry_th) + x * sin(odometry_th));
-#if 0
-  if(odometry_th > 2*PI)
-    odometry_th -= 2*PI;
-  if(odometry_th < -2*PI)
-    odometry_th += 2*PI;
-#endif
-  // position
+
+  v = delta_s / step_time;
+  w = delta_theta / step_time;
+
+  last_velocity_[LEFT]  = wheel_l / step_time;
+  last_velocity_[RIGHT] = wheel_r / step_time;
+
+  // compute odometric pose
+  odometry_x += delta_s * cos(odometry_th + (delta_theta / 2.0));
+  odometry_y += delta_s * sin(odometry_th + (delta_theta / 2.0));
+  odometry_th += delta_theta;
+
+  // compute odometric instantaneouse velocity
+  odom_vel[0] = v;
+  odom_vel[1] = 0.0;
+  odom_vel[2] = w;
+
   odom.pose.pose.position.x = odometry_x;
   odom.pose.pose.position.y = odometry_y;
-  odom.pose.pose.position.z = 0.0;
-
+  odom.pose.pose.position.z = odometry_th*57.59;
   odom.pose.pose.orientation = tf::createQuaternionFromYaw(odometry_th);
 
+  // We should update the twist of the odometry
+  odom.twist.twist.linear.x  = odom_vel[0];
+  odom.twist.twist.angular.z = odom_vel[2];
 
+  last_theta = atan2f(imu.quat[1]*imu.quat[2] + imu.quat[0]*imu.quat[3],
+                      0.5f - imu.quat[2]*imu.quat[2] - imu.quat[3]*imu.quat[3]);
 
-
-  
-  double vx = 0.0;
-  double vy = 0.0;
-  double vth = 0.0;
-  double v_motor[3];
-  for(int i=0;i<3;i++)
-  {v_motor[i] = motor.speed[i]*0.00304;}
-  //double dt = (current_time - last_time).toSec();
-  vx = (v_motor[RIGHT_CH]-v_motor[LEFT_CH])/1.732;
-  vy = (2*v_motor[BACK_CH]-v_motor[RIGHT_CH]-v_motor[LEFT_CH])/3.0;
-  vth = (v_motor[0]+v_motor[1]+v_motor[2])/(3*DISTANCE_CENTER_TO_WHEEL);
-
-
-  //velocity
-  odom.twist.twist.linear.x = vx; 
-  odom.twist.twist.linear.y = vy;
-  odom.twist.twist.linear.z = 0.0;
-
-//  odom.twist.twist.linear.x = motor.speed[0]; 
-//  odom.twist.twist.linear.y = motor.speed[1];
-//  odom.twist.twist.linear.z = motor.speed[2];
-  
-  odom.twist.twist.angular.x = 0.0;
-  odom.twist.twist.angular.y = 0.0;
-  odom.twist.twist.angular.z = vth;
-
-//  odom.twist.twist.angular.x = old_wheel_encoder[0];
-//  odom.twist.twist.angular.y = old_wheel_encoder[1];
-//  odom.twist.twist.angular.z = old_wheel_encoder[2];
-
-  odom.pose.covariance[0] = float(ttt_mp*1.0);
-  odom.pose.covariance[7] = 0.1;
-  odom.pose.covariance[14] = 999999;
-  odom.pose.covariance[21] = 999999;
-  odom.pose.covariance[28] = 999999;
-  odom.pose.covariance[35] = 0.05;
-
-
-  last_theta = angle_kalman;
-  //last_theta = atan2f(imu.quat[1]*imu.quat[2] + imu.quat[0]*imu.quat[3],
-  //                    0.5f - imu.quat[2]*imu.quat[2] - imu.quat[3]*imu.quat[3]);
   return true;
 }
 
@@ -550,12 +558,14 @@ void loop()
 			Odom
 
 *********************************************************************************/
+#if 1
 	if( (millis()- f2_timer[0]) >= (1000/30) )// 30Hz
 	{
 		publishSensorStateMsg();
 		publishDriveInformation();
 		f2_timer[0] = millis();
 	}
+#endif
 /*********************************************************************************
 
 			IMU
@@ -582,19 +592,20 @@ void loop()
 
 }
 
+
+
 void timer_Handle(void)
 {
-//	static uint8_t timer_count = 0;
-//	timer_count++;
 
+#if 1
 	__disable_irq();
-	motor.speed[0] = velocity_calculate(&motor.omni_wheel[0]);
-	motor.speed[1] = velocity_calculate(&motor.omni_wheel[1]);
-	motor.speed[2] = velocity_calculate(&motor.omni_wheel[2]);
+	motor.speed[0] = velocity_calculate(&motor.m_wheel[0]);
+	motor.speed[1] = velocity_calculate(&motor.m_wheel[1]);
 	__enable_irq();
-	motor.setSpeed(speed_motor.v_motor1, speed_motor.v_motor2, speed_motor.v_motor3);
-	motor.FeedbackSpeed(motor.speed[0], motor.speed[1], motor.speed[2]);
-	motor.controller();
+#endif
+	//motor.setSpeed(speed_motor.v_motor1, speed_motor.v_motor2);
+	motor.FeedbackSpeed(motor.speed[0], motor.speed[1]);
+	motor.controller(speed_motor.v_motor1, speed_motor.v_motor2);
 
 #if 0
 	float ang = atan2f(imu.quat[1]*imu.quat[2] + imu.quat[0]*imu.quat[3],
@@ -613,21 +624,14 @@ void timer_Handle(void)
 extern "C"{
 //interrupt function of encoder1
 void Encoder_Counter_1() {
-  Count_and_Direction(&motor.omni_wheel[0]);
+  Count_and_Direction(&motor.m_wheel[0]);
 }
 
 //interrupt function of encoder2
 void Encoder_Counter_2() {
-  Count_and_Direction(&motor.omni_wheel[1]);
-}
-
-//interrupt function of encoder3
-void Encoder_Counter_3() {
-  LED_TOGGLE(1);
-  Count_and_Direction(&motor.omni_wheel[2]);
+  Count_and_Direction(&motor.m_wheel[1]);
 }
 }
-
 int main(void)
 {
 /*************************************************************
@@ -681,10 +685,9 @@ int main(void)
 	pinMode(85,INPUT);
 	pinMode(86,INPUT);
 	pinMode(87,INPUT);
-  
-	attachInterrupt(2, Encoder_Counter_1, RISING);
-	attachInterrupt(4, Encoder_Counter_2, RISING);
-	attachInterrupt(6, Encoder_Counter_3, RISING);
+
+	attachInterrupt(10, Encoder_Counter_1, RISING);
+	attachInterrupt(11, Encoder_Counter_2, RISING);
 #endif
 
 #if 1

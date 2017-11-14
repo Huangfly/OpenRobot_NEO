@@ -56,13 +56,13 @@
 #define ENCODER_MIN                      -2147483648     // raw
 #define ENCODER_MAX                      2147483648      // raw
 
-#define WHEEL_RADIUS                     0.029           // meter
-#define WHEEL_SEPARATION                 0.160           // meter (BURGER : 0.160, WAFFLE : 0.287)
+#define WHEEL_RADIUS                     0.075           // meter
+#define WHEEL_SEPARATION                 0.310           // meter (BURGER : 0.160, WAFFLE : 0.287)
 #define TURNING_RADIUS                   0.080           // meter (BURGER : 0.080, WAFFLE : 0.1435)
 #define ENCODER_MIN                      -2147483648     // raw
 #define ENCODER_MAX                      2147483648      // raw
 
-#define TICK2RAD                         0.0005522  // 2*pi*r/330=0.00110431741741818181818181818182/2
+#define TICK2RAD                         0.03490658504  // 2*pi*r/180=0.0026179938775
 
 #define DEG2RAD(x)                       (x * 0.01745329252)  // *PI/180
 #define RAD2DEG(x)                       (x * 57.2957795131)  // *180/PI

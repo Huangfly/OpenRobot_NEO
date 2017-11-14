@@ -20,7 +20,7 @@
 #include "MPU9250_iic.h"
 #include "imu_spi.h"
 
-#define USE_IMU_IIC
+//#define USE_IMU_IIC
 #define MPU_CS_PIN          BDPIN_SPI_CS_IMU
 #define MPU9250_ADDRESS     0x68
 #define MPU_CALI_COUNT      512
@@ -249,6 +249,7 @@ void cMPU9250::gyro_get_adc( void )
 #ifdef USE_IMU_IIC
 		MPU_Get_Gyroscope(&x,&y,&z);
 #else
+		uint8_t rawADC[6];
     		imu_spi_reads( MPU9250_ADDRESS, MPU9250_GYRO_XOUT_H, 6, rawADC );
 	 		x = (((int16_t)rawADC[0]) << 8) | rawADC[1];
   	y = (((int16_t)rawADC[2]) << 8) | rawADC[3];
@@ -327,6 +328,7 @@ void cMPU9250::acc_get_adc( void )
 #ifdef USE_IMU_IIC
 		MPU_Get_Accelerometer(&x,&y,&z);
 #else
+		uint8_t rawADC[6];
     imu_spi_reads( MPU9250_ADDRESS, MPU9250_ACCEL_XOUT_H, 6, rawADC );
 
     x = (((int16_t)rawADC[0]) << 8) | rawADC[1];

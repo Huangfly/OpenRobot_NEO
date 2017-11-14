@@ -7,6 +7,9 @@
 #define LEFT_CH 2
 #define BACK_CH 1
 
+#define FORWARD 0
+#define BACKWARD 1
+
 typedef struct
 {
   
@@ -51,9 +54,18 @@ typedef struct
   float v_motor3;
 }Speed;
 
+typedef struct{
+  int SV_pwm;
+  int PG_exti;
+  int EN;
+  int FR;
+  int BK;
+  int target;
+}MOTOR_CTL;
 
-extern "C" void Count_and_Direction(Wheel *omni);
-float velocity_calculate(Wheel *omni);
+
+extern "C" void Count_and_Direction(Wheel *wheel);
+extern "C" float velocity_calculate(Wheel *omni) ;
 
 class CMotor
 {
@@ -62,14 +74,17 @@ public:
 	CMotor();
 	~CMotor();
 	void Init();
-	void controller();
-	bool readEncoder(int &s1,int &s2,int &s3);
-	void setSpeed(double s1,double s2,double s3);
-	void FeedbackSpeed(double s1,double s2,double s3);
+	void controller(double s1,double s2);
+	bool readEncoder(int &s1,int &s2);
+	void setSpeed(double s1,double s2);
+	void FeedbackSpeed(double s1,double s2);
 
-  MOTOR_PID m_pid[3];
-  Wheel omni_wheel[3];
-  double speed[3];
+  MOTOR_CTL m_ctl[2];
+  Wheel m_wheel[2];
+  double speed[2];
+  double target_speed[2];
+private:
+	void setDir(int target,Wheel &wheel);
 };
 
 

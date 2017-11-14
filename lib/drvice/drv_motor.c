@@ -29,7 +29,7 @@ struct t_motor_pwm _pwm[2] = {0};
 void drv_motor_pwm_init()
 {
 	_pwm[0].hTIM_.Instance = TIM4;
-	_pwm[0].pwm_freq = 1000;
+	_pwm[0].pwm_freq = 2000;
 
   _pwm[0].hTIM_.Init.Prescaler         = 8-1;
   _pwm[0].hTIM_.Init.Period            =216000000/8/_pwm[0].pwm_freq/2-1;
@@ -60,7 +60,7 @@ void drv_motor_pwm_init()
 
 	
 	_pwm[1].hTIM_.Instance = TIM1;
-	_pwm[1].pwm_freq = 1000;
+	_pwm[1].pwm_freq = 2000;
 
   _pwm[1].hTIM_.Init.Prescaler         = 8-1;
   _pwm[1].hTIM_.Init.Period            = 216000000/8/_pwm[1].pwm_freq-1;

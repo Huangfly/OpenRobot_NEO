@@ -20,15 +20,15 @@
 ////////////////////////////////////////////////////////////////////////////////// 	
 
 //LED端口定义
-#define LED_ON(n)		(n>5 ? __nop() : HAL_GPIO_WritePin(GPIOC,(uint16_t)(GPIO_PIN_1<<n),GPIO_PIN_RESET))
-#define LED_OFF(n)		(n>5 ? __nop() : HAL_GPIO_WritePin(GPIOC,(uint16_t)(GPIO_PIN_1<<n),GPIO_PIN_SET))
+#define LED_ON(n)		(n>5 ? __nop() : HAL_GPIO_WritePin(GPIOC,(uint16_t)(GPIO_PIN_0<<n),GPIO_PIN_RESET))
+#define LED_OFF(n)		(n>5 ? __nop() : HAL_GPIO_WritePin(GPIOC,(uint16_t)(GPIO_PIN_0<<n),GPIO_PIN_SET))
 
-#define BEEP_ONCE		{HAL_GPIO_WritePin(GPIOC,GPIO_PIN_5,GPIO_PIN_RESET);delay(100);HAL_GPIO_WritePin(GPIOC,GPIO_PIN_5,GPIO_PIN_SET);}
-#define BEEP_LONG		{HAL_GPIO_WritePin(GPIOC,GPIO_PIN_5,GPIO_PIN_RESET);delay(500);HAL_GPIO_WritePin(GPIOC,GPIO_PIN_5,GPIO_PIN_SET);}
+#define BEEP_ONCE		{HAL_GPIO_WritePin(GPIOG,GPIO_PIN_2,GPIO_PIN_RESET);delay(100);HAL_GPIO_WritePin(GPIOG,GPIO_PIN_2,GPIO_PIN_SET);}
+#define BEEP_LONG		{HAL_GPIO_WritePin(GPIOG,GPIO_PIN_2,GPIO_PIN_RESET);delay(500);HAL_GPIO_WritePin(GPIOG,GPIO_PIN_2,GPIO_PIN_SET);}
 
 
 
-#define LED_TOGGLE(n) ((n>5) ? __nop() : HAL_GPIO_TogglePin(GPIOC, (uint16_t)(GPIO_PIN_1<<n))) //LED输出电平翻转
+#define LED_TOGGLE(n) ((n>5) ? __nop() : HAL_GPIO_TogglePin(GPIOC, (uint16_t)(GPIO_PIN_0<<n))) //LED输出电平翻转
 
 
 void drv_Led_Init(void); //LED初始化函数

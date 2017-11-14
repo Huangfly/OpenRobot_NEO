@@ -34,8 +34,8 @@ extern const Pin2PortMapArray g_Pin2PortMapArray[]=
 	{GPIOB, GPIO_PIN_7, NOT_EXTI},	 //23 		 
 	{GPIOB, GPIO_PIN_8, NOT_EXTI},	 //24 		 
 	{GPIOB, GPIO_PIN_9, NOT_EXTI},	 //25 		 
-	{GPIOB, GPIO_PIN_10,NOT_EXTI},  //26 		 
-	{GPIOB, GPIO_PIN_11,NOT_EXTI},  //27 		 
+	{GPIOB, GPIO_PIN_10,10},  //26 		 
+	{GPIOB, GPIO_PIN_11,11},  //27 		 
 	{GPIOB, GPIO_PIN_12,NOT_EXTI},  //28 		 
 	{GPIOB, GPIO_PIN_13,NOT_EXTI},  //29 		 
 	{GPIOB, GPIO_PIN_14,NOT_EXTI},  //30 		 
@@ -97,7 +97,7 @@ extern const Pin2PortMapArray g_Pin2PortMapArray[]=
 	{GPIOF, GPIO_PIN_6, 6},	 //86 		 
 	{GPIOF, GPIO_PIN_7, 7},	 //87 		 
 	{GPIOF, GPIO_PIN_8, 8},	 //88 		 
-	{GPIOF, GPIO_PIN_9, NOT_EXTI},	 //89 		 
+	{GPIOF, GPIO_PIN_9, 9},	 //89 		 
 	{GPIOF, GPIO_PIN_10,NOT_EXTI},  //90 		 
 	{GPIOF, GPIO_PIN_11,NOT_EXTI},  //91 		 
 	{GPIOF, GPIO_PIN_12,NOT_EXTI},  //92 		 

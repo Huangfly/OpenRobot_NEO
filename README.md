@@ -1,3 +1,4 @@
-﻿OpenRobot驱动板程序，适用于三轮omni机器人
+﻿OpenRobot驱动板程序，适用于二轮差分载重机器人
 
-基于Keil进行开发，集成ros通讯协议与rosserial库进行通讯。
+基于Keil进行开发，集成ros通讯协议与rosserial库
+通过USBSerial与上位机进行通讯。
