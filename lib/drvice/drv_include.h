@@ -26,6 +26,7 @@
 #include "drv_timer.h"
 #include "drv_motor.h"
 #include "drv_exti.h"
+#include "drv_battery.h"
 #include "wdg.h"
 #include "vcp.h"
 

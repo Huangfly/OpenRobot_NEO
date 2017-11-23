@@ -20,7 +20,8 @@
 #include "core_cm7.h"
 #include "stm32f7xx_hal.h"
 
-
+void drv_battery_init(void);
+uint32_t getBatteryVol();
 
 #ifdef __cplusplus
 }

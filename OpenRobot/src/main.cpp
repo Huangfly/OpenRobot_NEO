@@ -304,8 +304,14 @@ void publishSensorStateMsg(void)
 //  int32_t current_tick;
   int32_t new_encoder[3];
   sensor_state_msg.stamp = nh.now();
-  sensor_state_msg.battery = 0.0;//checkVoltage();
 
+	float out;
+	out = (float)getBatteryVol()/20.408163;
+	
+  sensor_state_msg.battery = out;//checkVoltage();
+
+	
+	
   //dxl_comm_result = motor_driver.readEncoder(sensor_state_msg.left_encoder, sensor_state_msg.right_encoder);
   dxl_comm_result = motor.readEncoder(new_encoder[0], new_encoder[1], new_encoder[2]);
   if (dxl_comm_result == true)
@@ -336,7 +342,7 @@ bool updateOdometry(double diff_time)
 {
   
   float angle = 0.0;
-  float angle_kalman = 0.0;
+//  float angle_kalman = 0.0;
   
   float wheel_dis[3];
   float x,y,th;
@@ -349,8 +355,8 @@ bool updateOdometry(double diff_time)
 
   angle = atan2f(imu.quat[1]*imu.quat[2] + imu.quat[0]*imu.quat[3],
                      0.5f - imu.quat[2]*imu.quat[2] - imu.quat[3]*imu.quat[3]);
-  angle_kalman = kalman.update(angle);
-  th = angle_kalman - last_theta;
+  //angle_kalman = kalman.update(angle);
+  th = angle - last_theta;
 
   odometry_th += th;
   odometry_x += (x * cos(odometry_th) - y * sin(odometry_th));
@@ -409,7 +415,7 @@ bool updateOdometry(double diff_time)
   odom.pose.covariance[35] = 0.05;
 
 
-  last_theta = angle_kalman;
+  last_theta = angle;
   //last_theta = atan2f(imu.quat[1]*imu.quat[2] + imu.quat[0]*imu.quat[3],
   //                    0.5f - imu.quat[2]*imu.quat[2] - imu.quat[3]*imu.quat[3]);
   return true;
@@ -597,16 +603,17 @@ void timer_Handle(void)
 	motor.controller();
 
 #if 0
-	float ang = atan2f(imu.quat[1]*imu.quat[2] + imu.quat[0]*imu.quat[3],
-                       0.5f - imu.quat[2]*imu.quat[2] - imu.quat[3]*imu.quat[3]);//*57.29578f;
+	//float ang = atan2f(imu.quat[1]*imu.quat[2] + imu.quat[0]*imu.quat[3],
+  //                     0.5f - imu.quat[2]*imu.quat[2] - imu.quat[3]*imu.quat[3]);//*57.29578f;
       
 	//kalman_out = KalmanFilter(ang);
 	float out;
-	out = sonar.output;
-	DataScope_Get_Channel_Data((ang*57.29578f),1);
-	DataScope_Get_Channel_Data((out),2);
+	out = (float)getBatteryVol();
+	//out = sonar.output;
+	//DataScope_Get_Channel_Data((ang*57.29578f),1);
+	DataScope_Get_Channel_Data((out),1);
 	
-	Serial1.write(DataScope_OutPut_Buffer,DataScope_Data_Generate(2));
+	Serial1.write(DataScope_OutPut_Buffer,DataScope_Data_Generate(1));
 #endif
 }
 
@@ -708,11 +715,17 @@ int main(void)
 		BEEP_ONCE;
 	}
 #endif	
+	
+/*************************************************************
+						Battery Init
+***************************************************************/
+  drv_battery_init();
+	
 /*************************************************************
 						Timer Init
 ***************************************************************/
 #if 1
-  	drv_timer_init();
+  drv_timer_init();
 	drv_timer_pause(TIMER_CH2);
 	drv_timer_set_period(TIMER_CH2,60000);
 	drv_timer_attachInterrupt(TIMER_CH2,timer_Handle);
@@ -728,7 +741,7 @@ int main(void)
 
        prev_update_time = millis();
 
-
+	
 	while(1)
 	{
 		loop();

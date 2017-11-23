@@ -11,7 +11,7 @@
 //
 
 ADC_HandleTypeDef hADC3;
-
+uint32_t BatteryPin = 32;//PC0 => 32
 
 int drv_adc_init()
 {
@@ -36,20 +36,89 @@ int drv_adc_init()
   return 0;
 }
 
-void drv_battery_init( uint32_t ulPin )
+void drv_battery_init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct;
 
+  drv_adc_init();
 
-  if( g_Pin2PortMapArray[ulPin].GPIOx_Port == NULL ) return;
 
+  HAL_GPIO_DeInit(g_Pin2PortMapArray[BatteryPin].GPIOx_Port, g_Pin2PortMapArray[BatteryPin].Pin_abstraction);
 
-  HAL_GPIO_DeInit(g_Pin2PortMapArray[ulPin].GPIOx_Port, g_Pin2PortMapArray[ulPin].Pin_abstraction);
-
-  GPIO_InitStruct.Pin = g_Pin2PortMapArray[ulPin].Pin_abstraction;
+  GPIO_InitStruct.Pin = g_Pin2PortMapArray[BatteryPin].Pin_abstraction;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(g_Pin2PortMapArray[ulPin].GPIOx_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(g_Pin2PortMapArray[BatteryPin].GPIOx_Port, &GPIO_InitStruct);
+}
+
+static inline uint32_t mapResolution(uint32_t value, uint32_t from, uint32_t to) {
+	if (from == to)
+		return value;
+	if (from > to)
+		return value >> (from-to);
+	else
+		return value << (to-from);
+}
+
+uint32_t getBatteryVol()
+{
+	ADC_ChannelConfTypeDef sConfig;
+  ADC_HandleTypeDef      *hADCx;
+	uint32_t ulValue = 0;
+  uint32_t ulChannel;
+
+  ulChannel = ADC_CHANNEL_10;
+  
+
+  hADCx = &hADC3;
+
+  sConfig.Channel      = ulChannel;
+  sConfig.Rank         = 1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+  sConfig.Offset       = 0;
+  HAL_ADC_ConfigChannel(hADCx, &sConfig);
+  
+  HAL_ADC_Start(hADCx);
+  HAL_ADC_PollForConversion(hADCx, 10);
+  ulValue = HAL_ADC_GetValue(hADCx)*330/4096;
+
+  //ulValue = mapResolution(ulValue, 12, 10);
+ 
+  return ulValue;
+}
+
+void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+	if( hadc->Instance == ADC3 )
+	{
+		__HAL_RCC_ADC3_CLK_ENABLE();
+	}
+
+	HAL_GPIO_DeInit(g_Pin2PortMapArray[BatteryPin].GPIOx_Port, g_Pin2PortMapArray[BatteryPin].Pin_abstraction);
+
+	GPIO_InitStruct.Pin = g_Pin2PortMapArray[BatteryPin].Pin_abstraction;
+	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(g_Pin2PortMapArray[BatteryPin].GPIOx_Port, &GPIO_InitStruct);
+}
+
+void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
+{
+
+
+
+    if( hadc->Instance == ADC3 )
+    {
+      __HAL_RCC_ADC3_CLK_DISABLE();
+    }
+    if( hadc->Instance == ADC1 )
+    {
+      __HAL_RCC_ADC1_CLK_DISABLE();
+    }
+
+    HAL_GPIO_DeInit(g_Pin2PortMapArray[BatteryPin].GPIOx_Port, g_Pin2PortMapArray[BatteryPin].Pin_abstraction);
 }
 
 
