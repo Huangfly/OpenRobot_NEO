@@ -517,10 +517,10 @@ void publishImuMsg(void)
 	tfs_msg.header.stamp    = nh.now();
 	tfs_msg.header.frame_id = "base_link";
 	tfs_msg.child_frame_id  = "imu_link";
-	tfs_msg.transform.rotation.w = imu.quat[0];
-	tfs_msg.transform.rotation.x = imu.quat[1];
-	tfs_msg.transform.rotation.y = imu.quat[2];
-	tfs_msg.transform.rotation.z = imu.quat[3];
+	tfs_msg.transform.rotation.w = 1.0;//imu.quat[0];
+	tfs_msg.transform.rotation.x = 0.0;//imu.quat[1];
+	tfs_msg.transform.rotation.y = 0.0;//imu.quat[2];
+	tfs_msg.transform.rotation.z = 0.0;//imu.quat[3];
 
 	tfs_msg.transform.translation.x = -0.032;
 	tfs_msg.transform.translation.y = 0.0;
@@ -567,7 +567,7 @@ void loop()
 			IMU
 
 *********************************************************************************/
-	if( (millis()- f2_timer[1]) >= (1000/200) )// 200Hz
+	if( (millis()- f2_timer[1]) >= (1000/50) )// 200Hz
 	{
 		publishImuMsg();
 		f2_timer[1] = millis();
