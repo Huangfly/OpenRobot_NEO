@@ -1,16 +1,3 @@
-//----------------------------------------------------------------------------
-//    프로그램명 	:
-//
-//    만든이     	: Made by Baram ( chcbaram@paran.com )
-//
-//    날  짜     :
-//
-//    최종 수정  	:
-//
-//    MPU_Type	:
-//
-//    파일명     	: IMU.ino
-//----------------------------------------------------------------------------
 //#include <Arduino.h>
 #include <math.h>
 #include <stdlib.h>
@@ -54,7 +41,7 @@ cIMU::cIMU()
 ---------------------------------------------------------------------------*/
 uint8_t cIMU::begin( uint32_t hz )
 {
-	uint8_t err_code = IMU_OK;
+  uint8_t err_code = IMU_OK;
   uint32_t i;
   uint32_t pre_time;
 

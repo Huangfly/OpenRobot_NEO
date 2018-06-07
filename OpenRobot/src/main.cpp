@@ -133,8 +133,8 @@ uint8_t ros_readbuffer[256] = {0};
 
 /*-------------------------------------------------------------------------------------------------------------*/
 /*        
-        Q:¹ý³ÌÔëÉù£¬QÔö´ó£¬¶¯Ì¬ÏìÓ¦±ä¿ì£¬ÊÕÁ²ÎÈ¶¨ÐÔ±ä»µ
-        R:²âÁ¿ÔëÉù£¬RÔö´ó£¬¶¯Ì¬ÏìÓ¦±äÂý£¬ÊÕÁ²ÎÈ¶¨ÐÔ±äºÃ        
+        Q:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Qï¿½ï¿½ï¿½ó£¬¶ï¿½Ì¬ï¿½ï¿½Ó¦ï¿½ï¿½ì£¬ï¿½ï¿½ï¿½ï¿½ï¿½È¶ï¿½ï¿½Ô±ä»?
+        R:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½ó£¬¶ï¿½Ì¬ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¶ï¿½ï¿½Ô±ï¿½ï¿?       
 */
 double ProcessNiose_Q=0.002;
 double MeasureNoise_R=0.02;
@@ -155,14 +155,14 @@ double KalmanFilter(const double ResrcData)
         double kg;        
 
         x_mid=x_last; //x_last=x(k-1|k-1),x_mid=x(k|k-1)
-        p_mid=p_last+Q; //p_mid=p(k|k-1),p_last=p(k-1|k-1),Q=ÔëÉù
-        kg=p_mid/(p_mid+R); //kgÎªkalman filter£¬RÎªÔëÉù
-        x_now=x_mid+kg*(ResrcData-x_mid);//¹À¼Æ³öµÄ×îÓÅÖµ
+        p_mid=p_last+Q; //p_mid=p(k|k-1),p_last=p(k-1|k-1),Q=ï¿½ï¿½ï¿½ï¿½
+        kg=p_mid/(p_mid+R); //kgÎªkalman filterï¿½ï¿½RÎªï¿½ï¿½ï¿½ï¿½
+        x_now=x_mid+kg*(ResrcData-x_mid);//ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
                 
-        p_now=(1-kg)*p_mid;//×îÓÅÖµ¶ÔÓ¦µÄcovariance        
+        p_now=(1-kg)*p_mid;//ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Ó¦ï¿½ï¿½covariance        
 
-        p_last = p_now; //¸üÐÂcovarianceÖµ
-        x_last = x_now; //¸üÐÂÏµÍ³×´Ì¬Öµ
+        p_last = p_now; //ï¿½ï¿½ï¿½ï¿½covarianceÖµ
+        x_last = x_now; //ï¿½ï¿½ï¿½ï¿½ÏµÍ³×´Ì¬Öµ
 
         return x_now;                
 }
@@ -174,10 +174,10 @@ double KalmanFilter(const double ResrcData)
 void system_Init(void)
 {
 
-  Cache_Enable();                 //´ò¿ªL1-Cache
-  HAL_Init();				        //³õÊ¼»¯HAL¿â
-  Stm32_Clock_Init(432,25,2,9);   //ÉèÖÃÊ±ÖÓ,216Mhz 
-  delay_init(216);                //ÑÓÊ±³õÊ¼»¯
+  Cache_Enable();                 //ï¿½ï¿½L1-Cache
+  HAL_Init();				        //ï¿½ï¿½Ê¼ï¿½ï¿½HALï¿½ï¿½
+  Stm32_Clock_Init(432,25,2,9);   //ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½,216Mhz 
+  delay_init(216);                //ï¿½ï¿½Ê±ï¿½ï¿½Ê¼ï¿½ï¿½
 
 	__HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -394,18 +394,10 @@ bool updateOdometry(double diff_time)
   odom.twist.twist.linear.x = vx; 
   odom.twist.twist.linear.y = vy;
   odom.twist.twist.linear.z = 0.0;
-
-//  odom.twist.twist.linear.x = motor.speed[0]; 
-//  odom.twist.twist.linear.y = motor.speed[1];
-//  odom.twist.twist.linear.z = motor.speed[2];
   
   odom.twist.twist.angular.x = 0.0;
   odom.twist.twist.angular.y = 0.0;
   odom.twist.twist.angular.z = vth;
-
-//  odom.twist.twist.angular.x = old_wheel_encoder[0];
-//  odom.twist.twist.angular.y = old_wheel_encoder[1];
-//  odom.twist.twist.angular.z = old_wheel_encoder[2];
 
   odom.pose.covariance[0] = float(ttt_mp*1.0);
   odom.pose.covariance[7] = 0.1;
@@ -414,10 +406,7 @@ bool updateOdometry(double diff_time)
   odom.pose.covariance[28] = 999999;
   odom.pose.covariance[35] = 0.05;
 
-
   last_theta = angle;
-  //last_theta = atan2f(imu.quat[1]*imu.quat[2] + imu.quat[0]*imu.quat[3],
-  //                    0.5f - imu.quat[2]*imu.quat[2] - imu.quat[3]*imu.quat[3]);
   return true;
 }
 
@@ -533,59 +522,18 @@ void publishImuMsg(void)
 
 void loop()
 {
-	static uint64_t f2_timer[3] = {0};
-
-/*********************************************************************************
-
-				Recv Fail for a long time
-
-*********************************************************************************/
-#if 1
-  last_time = millis() - watch_dog;
-  if (last_time <= 1300) {
-    //pidflag = true;
+  static uint64_t sonar_update_time = 0;
+  static uint64_t sonar_update_hz = 1;
+	static uint64_t current_time = 0;
+	current_time = millis();
+  if((current_time - sonar_update_time) >= (1000/sonar_update_hz - 30)){
+    sonar.update();
+		if((current_time - sonar_update_time) >= (1000/sonar_update_hz)){
+			sonar_update_time = current_time;
+			sonar.upload();
+			LED_TOGGLE(3);
+		}
   }
-  else {
-    speed_motor.v_motor1 = 0;
-    speed_motor.v_motor2 = 0;
-    speed_motor.v_motor3 = 0;
-  }
-#endif
-/*********************************************************************************
-
-			Odom
-
-*********************************************************************************/
-	if( (millis()- f2_timer[0]) >= (1000/30) )// 30Hz
-	{
-		publishSensorStateMsg();
-		publishDriveInformation();
-		f2_timer[0] = millis();
-	}
-/*********************************************************************************
-
-			IMU
-
-*********************************************************************************/
-	if( (millis()- f2_timer[1]) >= (1000/50) )// 200Hz
-	{
-		publishImuMsg();
-		f2_timer[1] = millis();
-	}
-	if( (millis()- f2_timer[2]) >= 1000/stateLed_Hz )// stateLed_Hz Hz
-	{
-		LED_TOGGLE(0);
-		Serial.write((uint8_t*)"OK",2);
-		f2_timer[2] = millis();
-	}
-
-	//sonar.update();
-	imu.update();
-	//updateGyroCali();
-
-	
-	nh.spinOnce();
-
 }
 
 void timer_Handle(void)
@@ -602,19 +550,6 @@ void timer_Handle(void)
 	motor.FeedbackSpeed(motor.speed[0], motor.speed[1], motor.speed[2]);
 	motor.controller();
 
-#if 0
-	//float ang = atan2f(imu.quat[1]*imu.quat[2] + imu.quat[0]*imu.quat[3],
-  //                     0.5f - imu.quat[2]*imu.quat[2] - imu.quat[3]*imu.quat[3]);//*57.29578f;
-      
-	//kalman_out = KalmanFilter(ang);
-	float out;
-	out = (float)getBatteryVol();
-	//out = sonar.output;
-	//DataScope_Get_Channel_Data((ang*57.29578f),1);
-	DataScope_Get_Channel_Data((out),1);
-	
-	Serial1.write(DataScope_OutPut_Buffer,DataScope_Data_Generate(1));
-#endif
 }
 
 extern "C"{
@@ -630,7 +565,7 @@ void Encoder_Counter_2() {
 
 //interrupt function of encoder3
 void Encoder_Counter_3() {
-  LED_TOGGLE(1);
+  //LED_TOGGLE(1);
   Count_and_Direction(&motor.omni_wheel[2]);
 }
 }
@@ -645,12 +580,15 @@ int main(void)
 	
 	drv_spi_init();
 	drv_micros_init();
-	drv_Led_Init();                     //³õÊ¼»¯LED
+	drv_Led_Init();                    
 	USB_Init();
+
+
+  
 /*************************************************************
 						Ros Init
 ***************************************************************/
-#if 1
+#if 0
 	nh.getHardware()->setBaud(115200);
 	nh.initNode();
 	
@@ -664,11 +602,13 @@ int main(void)
 /*************************************************************
 						Serial Init
 ***************************************************************/
-      //Serial1.begin((uint32_t)115200);
+#if 1
+  Serial1.begin((uint32_t)115200);
+#endif
 /*************************************************************
 						Motor Drive Init
 ***************************************************************/	
-#if 1
+#if 0
 	drv_motor_pwm_init();
 	motor.Init();
 	speed_motor.v_motor1 = 0.0;
@@ -678,8 +618,9 @@ int main(void)
 /*************************************************************
 						Motor Encoder Init
 ***************************************************************/	
-#if 1
+
 	drv_exti_init();
+#if 0
 	pinMode(80,INPUT);
 	pinMode(81,INPUT);
 	pinMode(82,INPUT);
@@ -719,12 +660,14 @@ int main(void)
 /*************************************************************
 						Battery Init
 ***************************************************************/
+#if 0
   drv_battery_init();
+#endif
 	
 /*************************************************************
 						Timer Init
 ***************************************************************/
-#if 1
+#if 0
   drv_timer_init();
 	drv_timer_pause(TIMER_CH2);
 	drv_timer_set_period(TIMER_CH2,60000);
@@ -735,12 +678,10 @@ int main(void)
 /*************************************************************
 						Sonar Init
 ***************************************************************/
-#if 0
-	sonar.Init();
+#if 1
+	sonar.Init(&Serial1);
 #endif
-
-       prev_update_time = millis();
-
+  prev_update_time = millis();
 	
 	while(1)
 	{

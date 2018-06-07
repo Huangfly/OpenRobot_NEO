@@ -75,7 +75,7 @@ extern const Pin2PortMapArray g_Pin2PortMapArray[]=
 	{GPIOE, GPIO_PIN_0, NOT_EXTI},	 //64 		 
 	{GPIOE, GPIO_PIN_1, NOT_EXTI},	 //65 		 
 	{GPIOE, GPIO_PIN_2, NOT_EXTI},	 //66 		 
-	{GPIOE, GPIO_PIN_3, NOT_EXTI},	 //67 		 
+	{GPIOE, GPIO_PIN_3, 3},	 //67 		 
 	{GPIOE, GPIO_PIN_4, NOT_EXTI},	 //68 		 
 	{GPIOE, GPIO_PIN_5, NOT_EXTI},	 //69 		 
 	{GPIOE, GPIO_PIN_6, NOT_EXTI},	 //70 		 
@@ -91,27 +91,27 @@ extern const Pin2PortMapArray g_Pin2PortMapArray[]=
 	{GPIOF, GPIO_PIN_0, 0},	 //80 		 
 	{GPIOF, GPIO_PIN_1, 1},	 //81 		 
 	{GPIOF, GPIO_PIN_2, 2},	 //82 		 
-	{GPIOF, GPIO_PIN_3, 3},	 //83 		 
-	{GPIOF, GPIO_PIN_4, 4},	 //84 		 
-	{GPIOF, GPIO_PIN_5, 5},	 //85 		 
-	{GPIOF, GPIO_PIN_6, 6},	 //86 		 
-	{GPIOF, GPIO_PIN_7, 7},	 //87 		 
+	{GPIOF, GPIO_PIN_3, NOT_EXTI},	 //83 		 
+	{GPIOF, GPIO_PIN_4, NOT_EXTI},	 //84 		 
+	{GPIOF, GPIO_PIN_5, NOT_EXTI},	 //85 		 
+	{GPIOF, GPIO_PIN_6, NOT_EXTI},	 //86 		 
+	{GPIOF, GPIO_PIN_7, NOT_EXTI},	 //87 		 
 	{GPIOF, GPIO_PIN_8, 8},	 //88 		 
 	{GPIOF, GPIO_PIN_9, NOT_EXTI},	 //89 		 
-	{GPIOF, GPIO_PIN_10,NOT_EXTI},  //90 		 
+	{GPIOF, GPIO_PIN_10,10},  //90 		 
 	{GPIOF, GPIO_PIN_11,NOT_EXTI},  //91 		 
 	{GPIOF, GPIO_PIN_12,NOT_EXTI},  //92 		 
 	{GPIOF, GPIO_PIN_13,NOT_EXTI},  //93 		 
-	{GPIOF, GPIO_PIN_14,NOT_EXTI},  //94 		 
+	{GPIOF, GPIO_PIN_14,14},  //94 		 
 	{GPIOF, GPIO_PIN_15,NOT_EXTI},  //95 		 
 	{GPIOG, GPIO_PIN_0, NOT_EXTI},	 //96 		 
 	{GPIOG, GPIO_PIN_1, NOT_EXTI},	 //97 		 
 	{GPIOG, GPIO_PIN_2, NOT_EXTI},	 //98 		 
 	{GPIOG, GPIO_PIN_3, NOT_EXTI},	 //99 		 
-	{GPIOG, GPIO_PIN_4, NOT_EXTI},	 //100		 
-	{GPIOG, GPIO_PIN_5, NOT_EXTI},	 //101		 
-	{GPIOG, GPIO_PIN_6, NOT_EXTI},	 //102		 
-	{GPIOG, GPIO_PIN_7, NOT_EXTI},			//103  
+	{GPIOG, GPIO_PIN_4, 4},	 //100		 
+	{GPIOG, GPIO_PIN_5, 5},	 //101		 
+	{GPIOG, GPIO_PIN_6, 6},	 //102		 
+	{GPIOG, GPIO_PIN_7, 7},			//103  
 	{GPIOG, GPIO_PIN_8, NOT_EXTI},			//104  
 	{GPIOG, GPIO_PIN_9, NOT_EXTI},			//105  
 	{GPIOG, GPIO_PIN_10,NOT_EXTI}, 		//106  

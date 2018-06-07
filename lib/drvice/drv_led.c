@@ -1,33 +1,34 @@
 #include "drv_led.h"
 
-//³õÊ¼»¯PB0,PB1ÎªÊä³ö.²¢Ê¹ÄÜÕâÁ½¸ö¿ÚµÄÊ±ÖÓ		    
-//LED IO³õÊ¼»¯
+//ï¿½ï¿½Ê¼ï¿½ï¿½PB0,PB1Îªï¿½ï¿½ï¿½.ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ê±ï¿½ï¿½		    
+//LED IOï¿½ï¿½Ê¼ï¿½ï¿½
 void drv_Led_Init(void)
 {
     GPIO_InitTypeDef GPIO_Initure;
 	
-    GPIO_Initure.Pin=GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_5; //PB0,1
-    GPIO_Initure.Mode=GPIO_MODE_OUTPUT_PP;  //ÍÆÍìÊä³ö
-    GPIO_Initure.Pull=GPIO_PULLUP;          //ÉÏÀ­
-    GPIO_Initure.Speed=GPIO_SPEED_HIGH;     //¸ßËÙ
-    HAL_GPIO_Init(GPIOC,&GPIO_Initure);     //³õÊ¼»¯GPIOB.0ºÍGPIOB.1
+    GPIO_Initure.Pin=GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5; //PB0,1
+    GPIO_Initure.Mode=GPIO_MODE_OUTPUT_PP;  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    GPIO_Initure.Pull=GPIO_PULLUP;          //ï¿½ï¿½ï¿½ï¿½
+    GPIO_Initure.Speed=GPIO_SPEED_HIGH;     //ï¿½ï¿½ï¿½ï¿½
+    HAL_GPIO_Init(GPIOC,&GPIO_Initure);     //ï¿½ï¿½Ê¼ï¿½ï¿½GPIOB.0ï¿½ï¿½GPIOB.1
 	
 	
 	  GPIO_Initure.Pin=GPIO_PIN_2; //PB0,1
-    GPIO_Initure.Mode=GPIO_MODE_OUTPUT_PP;  //ÍÆÍìÊä³ö
-    GPIO_Initure.Pull=GPIO_PULLUP;          //ÉÏÀ­
-    GPIO_Initure.Speed=GPIO_SPEED_HIGH;     //¸ßËÙ
-    HAL_GPIO_Init(GPIOG,&GPIO_Initure);     //³õÊ¼»¯GPIOB.0ºÍGPIOB.1
+    GPIO_Initure.Mode=GPIO_MODE_OUTPUT_PP;  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    GPIO_Initure.Pull=GPIO_PULLUP;          //ï¿½ï¿½ï¿½ï¿½
+    GPIO_Initure.Speed=GPIO_SPEED_HIGH;     //ï¿½ï¿½ï¿½ï¿½
+    HAL_GPIO_Init(GPIOG,&GPIO_Initure);     //ï¿½ï¿½Ê¼ï¿½ï¿½GPIOB.0ï¿½ï¿½GPIOB.1
 	
 	
-    //HAL_GPIO_WritePin(GPIOC,GPIO_PIN_0,GPIO_PIN_SET);	//PB1ÖÃ1
-	  HAL_GPIO_WritePin(GPIOC,GPIO_PIN_1,GPIO_PIN_SET);	//PB1ÖÃ1 
-		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_2,GPIO_PIN_SET);	//PB1ÖÃ1 
-		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_3,GPIO_PIN_SET);	//PB1ÖÃ1 
-		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_4,GPIO_PIN_SET);	//PB1ÖÃ1 
+    //HAL_GPIO_WritePin(GPIOC,GPIO_PIN_0,GPIO_PIN_SET);	//PB1ï¿½ï¿½1
+	  HAL_GPIO_WritePin(GPIOC,GPIO_PIN_1,GPIO_PIN_SET);	//PB1ï¿½ï¿½1 
+		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_2,GPIO_PIN_SET);	//PB1ï¿½ï¿½1 
+		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_3,GPIO_PIN_SET);	//PB1ï¿½ï¿½1 
+		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_4,GPIO_PIN_SET);	//PB1ï¿½ï¿½1 
+    HAL_GPIO_WritePin(GPIOC,GPIO_PIN_5,GPIO_PIN_SET);	//PB1ï¿½ï¿½1 
 		
 		
-		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_2,GPIO_PIN_SET);	//PB1ÖÃ1 
+		HAL_GPIO_WritePin(GPIOG,GPIO_PIN_2,GPIO_PIN_SET);	//PB1ï¿½ï¿½1 
 }
 
 
