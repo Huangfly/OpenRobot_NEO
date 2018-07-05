@@ -224,9 +224,16 @@ void CSonar::upload(void)
 	sonar[5].distance = sonar[5].distanceData*0.000173f;
 	sonar[6].distance = sonar[6].distanceData*0.000173f;
 	sonar[7].distance = sonar[7].distanceData*0.000173f;
-	
+	if(sonar[0].distance > 9.9f) sonar[0].distance = 9.9f;
+	if(sonar[1].distance > 9.9f) sonar[1].distance = 9.9f;
+	if(sonar[2].distance > 9.9f) sonar[2].distance = 9.9f;
+	if(sonar[3].distance > 9.9f) sonar[3].distance = 9.9f;
+	if(sonar[4].distance > 9.9f) sonar[4].distance = 9.9f;
+	if(sonar[5].distance > 9.9f) sonar[5].distance = 9.9f;
+	if(sonar[6].distance > 9.9f) sonar[6].distance = 9.9f;
+	if(sonar[7].distance > 9.9f) sonar[7].distance = 9.9f;
 #if 0
-	sprintf(send_buf,"sonar:%f %f %f %f %f %f %f %f\n"
+	sprintf(send_buf,"sonar:%04.4f %04.4f %04.4f %04.4f %04.4f %04.4f %04.4f %04.4f\n"
 	,sonar[0].distance
 	,sonar[1].distance
 	,sonar[2].distance

@@ -523,7 +523,7 @@ void publishImuMsg(void)
 void loop()
 {
   static uint64_t sonar_update_time = 0;
-  static uint64_t sonar_update_hz = 1;
+  static uint64_t sonar_update_hz = 10;
 	static uint64_t current_time = 0;
 	current_time = millis();
   if((current_time - sonar_update_time) >= (1000/sonar_update_hz - 30)){
